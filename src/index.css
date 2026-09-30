@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased min-h-screen font-sans transition-colors duration-200;
+  }
+
+  /* Ensure focus rings are prominent in both light and dark themes */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-600 dark:ring-primary-400 ring-offset-2 ring-offset-white dark:ring-offset-slate-900;
+  }
+}
+
+/* Accessibility utility for visually hidden content readable by screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
