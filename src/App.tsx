@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
+import { FavoritesProvider } from './context/FavoritesContext'
 import { Layout } from './components/layout/Layout'
 import { HomePage } from './pages/HomePage'
 import { DirectoryPage } from './pages/DirectoryPage'
@@ -18,23 +19,25 @@ import { NotFoundPage } from './pages/NotFoundPage'
 export function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            {/* Landing Page */}
-            <Route path="/" element={<HomePage />} />
+      <FavoritesProvider>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              {/* Landing Page */}
+              <Route path="/" element={<HomePage />} />
 
-            {/* Main Directory Route */}
-            <Route path="/businesses" element={<DirectoryPage />} />
+              {/* Main Directory Route */}
+              <Route path="/businesses" element={<DirectoryPage />} />
 
-            {/* Business Detail Route (Dynamic :id parameter) */}
-            <Route path="/businesses/:id" element={<BusinessDetailPage />} />
+              {/* Business Detail Route (Dynamic :id parameter) */}
+              <Route path="/businesses/:id" element={<BusinessDetailPage />} />
 
-            {/* Catch-all 404 Route */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
+              {/* Catch-all 404 Route */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </FavoritesProvider>
     </ThemeProvider>
   )
 }
