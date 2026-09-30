@@ -19,6 +19,11 @@ export function BusinessCard({ business }: BusinessCardProps) {
           src={business.imageUrl}
           alt={business.imageAlt}
           loading="lazy"
+          // If the remote image fails to load, hide it so the placeholder
+          // background shows instead of a broken-image icon.
+          onError={(event) => {
+            event.currentTarget.style.visibility = 'hidden'
+          }}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">

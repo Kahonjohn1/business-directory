@@ -114,6 +114,11 @@ export function BusinessDetailPage() {
         <img
           src={business.imageUrl}
           alt={business.imageAlt}
+          // If the remote image fails to load, hide it so the placeholder
+          // background shows instead of a broken-image icon.
+          onError={(event) => {
+            event.currentTarget.style.visibility = 'hidden'
+          }}
           className="w-full h-full object-cover"
         />
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
