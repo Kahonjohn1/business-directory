@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Compass, ArrowLeft } from 'lucide-react'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 /**
  * NotFoundPage: Catch-all 404 route for undefined URLs with dark mode support.
  */
 export function NotFoundPage() {
+  useDocumentTitle('Page Not Found (404) | NaijaDirectory')
+
   return (
     <div className="max-w-md mx-auto py-16 text-center">
       <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-slate-700">

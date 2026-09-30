@@ -19,6 +19,7 @@ import {
 import { BUSINESS_CATEGORIES, type BusinessCategory } from '../types/business'
 import { mockBusinesses } from '../data/mockBusinesses'
 import { BusinessCard } from '../components/directory/BusinessCard'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 // Category icon helper mapping
 const categoryIcons: Record<BusinessCategory, React.ComponentType<{ className?: string }>> = {
@@ -34,6 +35,8 @@ const categoryIcons: Record<BusinessCategory, React.ComponentType<{ className?: 
 }
 
 export function HomePage() {
+  useDocumentTitle('NaijaDirectory | Discover Verified Nigerian Businesses')
+
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 

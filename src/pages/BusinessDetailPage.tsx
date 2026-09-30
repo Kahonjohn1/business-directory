@@ -10,6 +10,7 @@ import {
   Building,
 } from 'lucide-react'
 import { useBusinessDetail } from '../hooks/useBusinessDetail'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { Badge } from '../components/common/Badge'
 import { ErrorState } from '../components/common/ErrorState'
 
@@ -19,6 +20,18 @@ import { ErrorState } from '../components/common/ErrorState'
 export function BusinessDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { business, status, error, isNotFound, retry } = useBusinessDetail(id)
+
+  // The title uses the real business name once the data has loaded, and falls
+  // back to a descriptive label while loading, missing, or failing.
+  const pageTitle =
+    business?.name ??
+    (isNotFound
+      ? 'Business Not Found'
+      : status === 'error'
+        ? 'Business Unavailable'
+        : 'Business Details')
+
+  useDocumentTitle(`${pageTitle} | NaijaDirectory`)
 
   // 1. Loading State
   if (status === 'loading') {

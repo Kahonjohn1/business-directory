@@ -7,12 +7,15 @@ import { BusinessGrid } from '../components/directory/BusinessGrid'
 import { LoadingState } from '../components/common/LoadingState'
 import { EmptyState } from '../components/common/EmptyState'
 import { ErrorState } from '../components/common/ErrorState'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 /**
  * DirectoryPage: The main directory route (/businesses).
  * Reads initial filter state from URL search params (set by HomePage search).
  */
 export function DirectoryPage() {
+  useDocumentTitle('Business Directory | NaijaDirectory')
+
   const {
     filteredBusinesses,
     status,
