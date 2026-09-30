@@ -35,7 +35,11 @@ export function useBusinesses() {
         ? (urlCat as BusinessCategory)
         : 'All'
 
-    setSearchQuery(urlSearch)
+    // The URL always stores a trimmed value, so if the incoming query only
+    // differs from what is already typed by surrounding whitespace, keep the
+    // current raw value. This stops a trailing space being deleted from the
+    // input box while the user is still typing a multi-word search.
+    setSearchQuery((previous) => (previous.trim() === urlSearch.trim() ? previous : urlSearch))
     setSelectedCategory(validCat)
   }, [searchParams])
 
