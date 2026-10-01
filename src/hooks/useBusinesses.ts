@@ -84,23 +84,40 @@ export function useBusinesses() {
     [searchQuery, updateUrlParams]
   )
 
-  // Fetch businesses from the service layer
-  const loadBusinesses = useCallback(async () => {
-    setStatus('loading')
-    setError(null)
-    try {
-      const data = await businessService.getAll()
-      setBusinesses(data)
-      setStatus('success')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "We couldn't load the directory."
-      setError(message)
-      setStatus('error')
-    }
-  }, [])
+  // Fetch businesses from the service layer. Accepts an optional "is this still
+  // the current request" check; when it reports true the response is discarded
+  // instead of applied, so a slow reply from a superseded request can never
+  // overwrite the state the user is actually looking at. This mirrors the
+  // guard in useBusinessDetail.
+  const loadBusinesses = useCallback(
+    async (isOutdated: () => boolean = () => false) => {
+      setStatus('loading')
+      setError(null)
+      try {
+        const data = await businessService.getAll()
+        if (isOutdated()) return
+        setBusinesses(data)
+        setStatus('success')
+      } catch (err) {
+        if (isOutdated()) return
+        const message = err instanceof Error ? err.message : "We couldn't load the directory."
+        setError(message)
+        setStatus('error')
+      }
+    },
+    []
+  )
 
   useEffect(() => {
-    loadBusinesses()
+    let outdated = false
+
+    loadBusinesses(() => outdated)
+
+    // Runs when the component unmounts, marking the in-flight request stale so
+    // its result is never written to state after teardown.
+    return () => {
+      outdated = true
+    }
   }, [loadBusinesses])
 
   // Derived state: computed whenever businesses, searchQuery, selectedCategory,
@@ -149,6 +166,14 @@ export function useBusinesses() {
     setSearchParams(new URLSearchParams(), { replace: true })
   }, [setSearchParams])
 
+  // Wrapped rather than exposed directly: ErrorState uses onClick={onRetry}, so
+  // React hands the click event to this callback. Passing loadBusinesses itself
+  // would deliver that event as the `isOutdated` argument and calling it would
+  // throw. Mirrors the wrapper in useBusinessDetail.
+  const retry = useCallback(() => {
+    loadBusinesses()
+  }, [loadBusinesses])
+
   return {
     businesses,
     filteredBusinesses,
@@ -163,7 +188,7 @@ export function useBusinesses() {
     clearSearch,
     clearCategory,
     clearFilters,
-    retry: loadBusinesses,
+    retry,
     totalCount: businesses.length,
     matchedCount: filteredBusinesses.length,
   }

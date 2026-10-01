@@ -48,8 +48,11 @@ export const businessService = {
       await delay(config.latencyMs)
     }
 
+    // Thrown messages describe the failure cause only. The page supplies the
+    // headline via ErrorState's `title`, so repeating it here would render the
+    // same sentence twice in the error panel.
     if (config.simulateError) {
-      throw new Error("We couldn't load the directory. Please check your connection and try again.")
+      throw new Error('The directory service did not respond. Please check your connection and try again.')
     }
 
     // Return a fresh clone to prevent accidental mutation of the mock data
@@ -66,7 +69,7 @@ export const businessService = {
     }
 
     if (config.simulateError) {
-      throw new Error("We couldn't load the business details.")
+      throw new Error('The business details service did not respond. Please try again.')
     }
 
     const found = mockBusinesses.find((b) => b.id === id)
