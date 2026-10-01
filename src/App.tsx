@@ -16,7 +16,7 @@ import { NotFoundPage } from './pages/NotFoundPage'
  * - /businesses/:id -> Dynamic single business detail page
  * - * -> Catch-all 404 page
  */
-export function App() {
+function App() {
   return (
     <ThemeProvider>
       <FavoritesProvider>

@@ -1,4 +1,4 @@
-import { type Business, type BusinessCategory, BUSINESS_CATEGORIES } from '../types/business'
+import { type Business } from '../types/business'
 import { mockBusinesses } from '../data/mockBusinesses'
 
 /**
@@ -74,12 +74,5 @@ export const businessService = {
 
     const found = mockBusinesses.find((b) => b.id === id)
     return found ? { ...found } : null
-  },
-
-  /**
-   * Retrieves all available business categories.
-   */
-  async getCategories(): Promise<readonly BusinessCategory[]> {
-    return BUSINESS_CATEGORIES
   },
 }

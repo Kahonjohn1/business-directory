@@ -89,24 +89,6 @@ export interface Business {
 }
 
 /**
- * Filter state representing active search criteria in the directory.
- */
-export interface DirectoryFilters {
-  searchQuery: string
-  selectedCategory: BusinessCategory | 'All'
-  selectedState?: string | 'All'
-}
-
-/**
  * Standardized network lifecycle statuses.
  */
-export type AsyncStatus = 'idle' | 'loading' | 'success' | 'error'
-
-/**
- * Generic container for asynchronous data operations.
- */
-export interface AsyncState<T> {
-  data: T | null
-  status: AsyncStatus
-  error: string | null
-}
+export type AsyncStatus = 'loading' | 'success' | 'error'
