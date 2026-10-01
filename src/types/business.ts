@@ -77,6 +77,13 @@ export interface Business {
   /** Review count */
   reviewCount?: number
 
+  /**
+   * Opening hours, one human-readable entry per day
+   * (e.g. 'Monday - Friday: 9:00 AM - 5:00 PM').
+   * Optional because not every listing publishes a schedule.
+   */
+  openingHours?: string[]
+
   /** Flag to spotlight business on the Landing Page */
   featured?: boolean
 }

@@ -8,11 +8,49 @@ import {
   Star,
   ExternalLink,
   Building,
+  Heart,
+  Clock,
 } from 'lucide-react'
 import { useBusinessDetail } from '../hooks/useBusinessDetail'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useFavorites } from '../context/FavoritesContext'
 import { Badge } from '../components/common/Badge'
 import { ErrorState } from '../components/common/ErrorState'
+
+/**
+ * Strips the scheme and leading www from a website URL so the contact list can
+ * show a short, readable hostname instead of a full address. Falls back to the
+ * original string if the URL cannot be parsed, so a malformed listing still
+ * renders rather than breaking the page.
+ */
+function getHostname(url: string): string {
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, '')
+    // Parsing can still succeed with an empty hostname, e.g. 'javascript:alert(1)',
+    // so treat that the same as a parse failure and show the original string.
+    return hostname || url
+  } catch {
+    return url
+  }
+}
+
+/**
+ * Splits a schedule entry such as 'Monday - Friday: 9:00 AM - 6:00 PM' into its
+ * day range and time range so the two can sit on either side of a row. Split on
+ * the first colon only, which keeps times such as '9:00 AM' intact.
+ */
+function splitSchedule(entry: string): { days: string; time: string } {
+  const separator = entry.indexOf(':')
+
+  if (separator === -1) {
+    return { days: entry, time: '' }
+  }
+
+  return {
+    days: entry.slice(0, separator).trim(),
+    time: entry.slice(separator + 1).trim(),
+  }
+}
 
 /**
  * BusinessDetailPage with full Light and Dark mode styling.
@@ -20,6 +58,10 @@ import { ErrorState } from '../components/common/ErrorState'
 export function BusinessDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { business, status, error, isNotFound, retry } = useBusinessDetail(id)
+
+  // Favorites live in context, so the button stays in sync with the heart on
+  // the directory cards and with the Favorites filter without any extra wiring.
+  const { isFavorite, toggleFavorite } = useFavorites()
 
   // The title uses the real business name once the data has loaded, and falls
   // back to a descriptive label while loading, missing, or failing.
@@ -36,16 +78,27 @@ export function BusinessDetailPage() {
   // 1. Loading State
   if (status === 'loading') {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
+      <div className="max-w-6xl mx-auto space-y-6 animate-pulse">
         <div className="h-6 w-36 bg-slate-200 dark:bg-slate-700 rounded" />
-        <div className="w-full aspect-[21/9] sm:aspect-[16/7] bg-slate-200 dark:bg-slate-700 rounded-3xl" />
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
-          <div className="h-8 w-2/3 bg-slate-200 dark:bg-slate-700 rounded" />
-          <div className="h-5 w-1/3 bg-slate-200 dark:bg-slate-700 rounded" />
-          <div className="space-y-2 pt-4">
+        <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="w-full aspect-[21/9] sm:aspect-[16/7] bg-slate-200 dark:bg-slate-700 rounded-3xl" />
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
+              <div className="h-8 w-2/3 bg-slate-200 dark:bg-slate-700 rounded" />
+              <div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded" />
+              <div className="h-4 w-1/3 bg-slate-200 dark:bg-slate-700 rounded" />
+              <div className="space-y-2 pt-4">
+                <div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-5/6 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-4/6 bg-slate-200 dark:bg-slate-700 rounded" />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
             <div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded" />
-            <div className="h-4 w-5/6 bg-slate-200 dark:bg-slate-700 rounded" />
-            <div className="h-4 w-4/6 bg-slate-200 dark:bg-slate-700 rounded" />
+            <div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded" />
+            <div className="h-4 w-2/3 bg-slate-200 dark:bg-slate-700 rounded" />
           </div>
         </div>
       </div>
@@ -99,10 +152,16 @@ export function BusinessDetailPage() {
   }
 
   // 4. Success State
+  const isFavorited = isFavorite(business.id)
+  const rating = business.rating
+  const filledStars = rating != null ? Math.round(rating) : 0
+  const reviewCount = business.reviewCount
+  const schedule = business.openingHours ?? []
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Back to Directory Navigation */}
-      <nav aria-label="Breadcrumb" className="flex items-center justify-between">
+      <nav aria-label="Breadcrumb" className="flex items-center justify-between gap-4">
         <Link
           to="/businesses"
           className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-primary-600 rounded-lg p-1"
@@ -122,99 +181,217 @@ export function BusinessDetailPage() {
         </div>
       </nav>
 
-      {/* Hero Banner Image */}
-      <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
-        <img
-          src={business.imageUrl}
-          alt={business.imageAlt}
-          // If the remote image fails to load, hide it so the placeholder
-          // background shows instead of a broken-image icon.
-          onError={(event) => {
-            event.currentTarget.style.visibility = 'hidden'
-          }}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
-          <Badge category={business.category} size="md" />
-        </div>
-      </div>
+      {/* Single column on mobile and tablet, split into content + sidebar on desktop */}
+      <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+        {/* ============ Primary Content ============ */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Hero Banner Image */}
+          <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <img
+              src={business.imageUrl}
+              alt={business.imageAlt}
+              // If the remote image fails to load, hide it so the placeholder
+              // background shows instead of a broken-image icon.
+              onError={(event) => {
+                event.currentTarget.style.visibility = 'hidden'
+              }}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+              <Badge category={business.category} size="md" />
+            </div>
+          </div>
 
-      {/* Main Details Card */}
-      <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 p-6 sm:p-8 md:p-10 shadow-sm space-y-8">
-        {/* Title, Rating & Location Header */}
-        <div className="border-b border-slate-100 dark:border-slate-700 pb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              {business.name}
-            </h1>
+          {/* Name, Rating, Favorite Toggle, Location & Description */}
+          <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 p-6 sm:p-8 md:p-10 shadow-sm space-y-8">
+            <header className="border-b border-slate-100 dark:border-slate-700 pb-6 space-y-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  {business.name}
+                </h1>
 
-            {business.rating && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 shrink-0 self-start sm:self-auto">
-                <Star className="w-4 h-4 fill-amber-500 text-amber-500" aria-hidden="true" />
-                <span className="font-bold text-sm">{business.rating}</span>
-                {business.reviewCount && (
-                  <span className="text-xs text-amber-700 dark:text-amber-500">({business.reviewCount} reviews)</span>
-                )}
+                {/* Favorite / Unfavorite Toggle, driven by FavoritesContext */}
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(business.id)}
+                  aria-pressed={isFavorited}
+                  title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                  className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 min-h-[44px] px-5 py-3 rounded-xl text-sm font-semibold shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800 ${
+                    isFavorited
+                      ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 ring-1 ring-rose-300 dark:ring-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/60'
+                      : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 ring-1 ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <Heart
+                    className={`w-5 h-5 shrink-0 ${
+                      isFavorited ? 'fill-rose-500 text-rose-500 dark:fill-rose-400 dark:text-rose-400' : ''
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <span>{isFavorited ? 'Saved to Favorites' : 'Add to Favorites'}</span>
+                </button>
               </div>
-            )}
-          </div>
 
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-sm mt-3">
-            <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" aria-hidden="true" />
-            <span>{business.location}</span>
-          </div>
+              {/* Rating */}
+              {rating != null && (
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <div className="flex items-center gap-0.5" aria-hidden="true">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-4 h-4 ${
+                          star <= filledStars
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'fill-slate-200 text-slate-200 dark:fill-slate-700 dark:text-slate-700'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <span className="font-bold text-slate-900 dark:text-white">{rating}</span> out of 5
+                    {reviewCount != null && (
+                      <span>
+                        {' '}
+                        &middot; {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              )}
+
+              {/* Location */}
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-sm">
+                <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" aria-hidden="true" />
+                <span>{business.location}</span>
+              </div>
+            </header>
+
+            {/* Full Business Description */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">About this Business</h2>
+              <p className="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed whitespace-pre-line">
+                {business.description}
+              </p>
+            </div>
+          </article>
         </div>
 
-        {/* Full Business Description */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">About this Business</h2>
-          <p className="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed whitespace-pre-line">
-            {business.description}
-          </p>
-        </div>
+        {/* ============ Contact & Hours Sidebar ============ */}
+        <aside className="space-y-6 lg:sticky lg:top-6">
+          {/* Contact & Action Surface */}
+          <section className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+              Contact
+            </h2>
 
-        {/* Contact & Action Surface */}
-        <div className="pt-6 border-t border-slate-100 dark:border-slate-700">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
-            Get in Touch & Connect
-          </h2>
-          <div className="flex flex-wrap items-center gap-4">
-            {business.website ? (
+            <dl className="mt-5 space-y-4">
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  Category
+                </dt>
+                <dd className="mt-1.5">
+                  <Badge category={business.category} size="sm" />
+                </dd>
+              </div>
+
+              {business.website && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Website
+                  </dt>
+                  <dd className="mt-1.5">
+                    <a
+                      href={business.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 break-all focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
+                    >
+                      <Globe className="w-4 h-4 shrink-0" aria-hidden="true" />
+                      <span>{getHostname(business.website)}</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-70" aria-hidden="true" />
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </a>
+                  </dd>
+                </div>
+              )}
+
+              {business.phone && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Phone
+                  </dt>
+                  <dd className="mt-1.5">
+                    <a
+                      href={`tel:${business.phone}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
+                    >
+                      <Phone className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
+                      <span>{business.phone}</span>
+                    </a>
+                  </dd>
+                </div>
+              )}
+
+              {business.email && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Email
+                  </dt>
+                  <dd className="mt-1.5">
+                    <a
+                      href={`mailto:${business.email}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
+                    >
+                      <Mail className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
+                      <span className="break-all">{business.email}</span>
+                    </a>
+                  </dd>
+                </div>
+              )}
+            </dl>
+
+            {business.website && (
               <a
                 href={business.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-naija-600 hover:bg-naija-700 dark:bg-naija-700 dark:hover:bg-naija-600 text-white font-semibold text-sm shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-naija-600 focus-visible:ring-offset-2 min-h-[44px]"
+                className="mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] rounded-xl bg-naija-600 hover:bg-naija-700 dark:bg-naija-700 dark:hover:bg-naija-600 text-white font-semibold text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-naija-600 focus-visible:ring-offset-2"
               >
                 <Globe className="w-4 h-4" aria-hidden="true" />
                 <span>Visit Official Website</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-80" aria-hidden="true" />
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
-            ) : null}
-
-            {business.phone && (
-              <a
-                href={`tel:${business.phone}`}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold text-sm border border-slate-200 dark:border-slate-600 shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 min-h-[44px]"
-              >
-                <Phone className="w-4 h-4 text-slate-600 dark:text-slate-400" aria-hidden="true" />
-                <span>Call {business.phone}</span>
-              </a>
             )}
+          </section>
 
-            {business.email && (
-              <a
-                href={`mailto:${business.email}`}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold text-sm border border-slate-200 dark:border-slate-600 shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 min-h-[44px]"
-              >
-                <Mail className="w-4 h-4 text-slate-600 dark:text-slate-400" aria-hidden="true" />
-                <span>Email Business</span>
-              </a>
-            )}
-          </div>
-        </div>
-      </article>
+          {/* Opening Hours, only rendered when the listing publishes a schedule */}
+          {schedule.length > 0 && (
+            <section className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 p-6 shadow-sm">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+                <span>Opening Hours</span>
+              </h2>
+              <ul className="mt-5 space-y-2.5">
+                {schedule.map((entry) => {
+                  const { days, time } = splitSchedule(entry)
+                  return (
+                    <li
+                      key={entry}
+                      className="flex items-baseline justify-between gap-3 text-sm border-b border-slate-100 dark:border-slate-700/60 last:border-b-0 pb-2.5 last:pb-0"
+                    >
+                      <span className="text-slate-600 dark:text-slate-400">{days}</span>
+                      {time && (
+                        <span className="font-semibold text-slate-900 dark:text-white text-right">{time}</span>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+        </aside>
+      </div>
     </div>
   )
 }

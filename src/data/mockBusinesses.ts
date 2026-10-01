@@ -22,6 +22,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 310,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM'
+    ],
   },
   {
     id: 'paystack',
@@ -39,6 +42,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 420,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM'
+    ],
   },
   {
     id: 'cchub-nigeria',
@@ -56,6 +62,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 145,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 8:00 AM - 5:00 PM'
+    ],
   },
 
   // 2. RESTAURANTS & FOOD
@@ -75,6 +84,10 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 520,
     featured: true,
+    openingHours: [
+      'Monday - Wednesday: 12:00 PM - 10:00 PM',
+      'Thursday - Sunday: 11:00 AM - 11:00 PM'
+    ],
   },
   {
     id: 'jevinik-abuja',
@@ -92,6 +105,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 390,
     featured: false,
+    openingHours: [
+      'Monday - Sunday: 11:00 AM - 11:00 PM'
+    ],
   },
   {
     id: 'circa-non-pareil',
@@ -109,6 +125,10 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 210,
     featured: false,
+    openingHours: [
+      'Tuesday - Sunday: 12:00 PM - 11:00 PM',
+      'Monday: Closed'
+    ],
   },
   {
     id: 'yellow-chilli',
@@ -126,6 +146,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 275,
     featured: false,
+    openingHours: [
+      'Monday - Sunday: 12:00 PM - 10:00 PM'
+    ],
   },
 
   // 3. FINANCE
@@ -145,6 +168,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 460,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 5:00 PM'
+    ],
   },
   {
     id: 'leadway-assurance',
@@ -162,6 +188,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 180,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 8:00 AM - 5:00 PM'
+    ],
   },
   {
     id: 'cowrywise',
@@ -179,6 +208,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 290,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM'
+    ],
   },
 
   // 4. HEALTHCARE
@@ -198,6 +230,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 230,
     featured: true,
+    openingHours: [
+      'Monday - Sunday: Open 24 hours'
+    ],
   },
   {
     id: 'abuja-clinics',
@@ -215,6 +250,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 165,
     featured: false,
+    openingHours: [
+      'Monday - Sunday: Open 24 hours'
+    ],
   },
   {
     id: 'kelina-hospital',
@@ -232,6 +270,10 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 195,
     featured: false,
+    openingHours: [
+      'Monday - Saturday: 8:00 AM - 8:00 PM',
+      'Sunday: 12:00 PM - 6:00 PM'
+    ],
   },
   {
     id: 'medplus-pharmacy',
@@ -249,6 +291,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 310,
     featured: false,
+    openingHours: [
+      'Monday - Sunday: 8:00 AM - 9:00 PM'
+    ],
   },
 
   // 5. EDUCATION
@@ -268,6 +313,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 280,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM'
+    ],
   },
   {
     id: 'greensprings-school',
@@ -285,6 +333,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 190,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 7:30 AM - 4:00 PM'
+    ],
   },
   {
     id: 'altschool-africa',
@@ -302,6 +353,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 310,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 8:00 AM - 5:00 PM'
+    ],
   },
 
   // 6. FASHION
@@ -321,6 +375,10 @@ export const mockBusinesses: Business[] = [
     rating: 5.0,
     reviewCount: 140,
     featured: true,
+    openingHours: [
+      'Monday - Saturday: 10:00 AM - 7:00 PM',
+      'Sunday: Closed'
+    ],
   },
   {
     id: 'africana-couture',
@@ -338,6 +396,10 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 95,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM',
+      'Saturday: 10:00 AM - 4:00 PM'
+    ],
   },
   {
     id: 'dye-lab',
@@ -355,6 +417,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 110,
     featured: false,
+    openingHours: [
+      'Tuesday - Saturday: 10:00 AM - 7:00 PM'
+    ],
   },
 
   // 7. REAL ESTATE
@@ -374,6 +439,10 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 220,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 5:00 PM',
+      'Saturday: 10:00 AM - 2:00 PM'
+    ],
   },
   {
     id: 'mixta-nigeria',
@@ -391,6 +460,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.7,
     reviewCount: 155,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 8:00 AM - 5:00 PM'
+    ],
   },
 
   // 8. MARKETING & ADVERTISING
@@ -410,6 +482,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.9,
     reviewCount: 115,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 9:00 AM - 6:00 PM'
+    ],
   },
   {
     id: 'insight-publicis',
@@ -427,6 +502,9 @@ export const mockBusinesses: Business[] = [
     rating: 4.8,
     reviewCount: 130,
     featured: false,
+    openingHours: [
+      'Monday - Friday: 8:30 AM - 5:30 PM'
+    ],
   },
 
   // 9. PROFESSIONAL SERVICES
@@ -446,5 +524,8 @@ export const mockBusinesses: Business[] = [
     rating: 5.0,
     reviewCount: 95,
     featured: true,
+    openingHours: [
+      'Monday - Friday: 8:00 AM - 5:00 PM'
+    ],
   },
 ]
