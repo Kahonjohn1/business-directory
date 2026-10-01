@@ -216,15 +216,17 @@ export function BusinessDetailPage() {
                   onClick={() => toggleFavorite(business.id)}
                   aria-pressed={isFavorited}
                   title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-                  className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 min-h-[44px] px-5 py-3 rounded-xl text-sm font-semibold shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800 ${
+                  className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 min-h-[44px] px-5 py-3 rounded-xl text-sm font-semibold shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800 active:scale-[0.98] motion-reduce:active:scale-100 ${
                     isFavorited
                       ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 ring-1 ring-rose-300 dark:ring-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/60'
                       : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 ring-1 ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'
                   }`}
                 >
                   <Heart
-                    className={`w-5 h-5 shrink-0 ${
-                      isFavorited ? 'fill-rose-500 text-rose-500 dark:fill-rose-400 dark:text-rose-400' : ''
+                    className={`w-5 h-5 shrink-0 transition-transform duration-150 ease-out motion-reduce:transition-none ${
+                      isFavorited
+                        ? 'fill-rose-500 text-rose-500 dark:fill-rose-400 dark:text-rose-400 scale-110'
+                        : 'scale-100'
                     }`}
                     aria-hidden="true"
                   />
@@ -304,7 +306,7 @@ export function BusinessDetailPage() {
                       href={business.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 break-all focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 break-all focus-visible:ring-2 focus-visible:ring-primary-600 rounded transition-colors duration-150 motion-reduce:transition-none"
                     >
                       <Globe className="w-4 h-4 shrink-0" aria-hidden="true" />
                       <span>{getHostname(business.website)}</span>
@@ -323,7 +325,7 @@ export function BusinessDetailPage() {
                   <dd className="mt-1.5">
                     <a
                       href={`tel:${business.phone}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded transition-colors duration-150 motion-reduce:transition-none"
                     >
                       <Phone className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
                       <span>{business.phone}</span>
@@ -340,9 +342,9 @@ export function BusinessDetailPage() {
                   <dd className="mt-1.5">
                     <a
                       href={`mailto:${business.email}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded"
-                    >
-                      <Mail className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
+className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-600 rounded transition-colors duration-150 motion-reduce:transition-none"
+                  >
+                    <Mail className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
                       <span className="break-all">{business.email}</span>
                     </a>
                   </dd>

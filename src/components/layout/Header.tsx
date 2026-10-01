@@ -4,7 +4,7 @@ import { ThemeToggle } from './ThemeToggle'
 
 export function Header() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+    `px-2.5 sm:px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
       isActive
         ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
         : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'

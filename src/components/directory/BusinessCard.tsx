@@ -16,7 +16,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
   const isFavorited = isFavorite(business.id)
 
   return (
-    <article className="group flex flex-col h-full bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+    <article className="group flex flex-col h-full bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden motion-safe:hover:-translate-y-0.5">
       {/* Business Thumbnail Image */}
       <div className="relative w-full aspect-[16/9] bg-slate-100 dark:bg-slate-700 overflow-hidden">
         <img
@@ -46,14 +46,16 @@ export function BusinessCard({ business }: BusinessCardProps) {
           aria-pressed={isFavorited}
           aria-label={`Favorite ${business.name}`}
           title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-          className={`absolute top-3 right-3 z-10 inline-flex items-center justify-center p-2.5 rounded-full shadow-sm backdrop-blur-sm transition-colors focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:outline-none ${
+          className={`absolute top-3 right-3 z-10 inline-flex items-center justify-center p-2.5 rounded-full shadow-sm backdrop-blur-sm transition-colors focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 motion-reduce:active:scale-100 ${
             isFavorited
               ? 'bg-rose-50/95 dark:bg-rose-950/90 text-rose-500 dark:text-rose-400 ring-1 ring-rose-300 dark:ring-rose-800'
               : 'bg-white/85 dark:bg-slate-900/85 text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400'
           }`}
         >
           <Heart
-            className={`w-5 h-5 ${isFavorited ? 'fill-rose-500 dark:fill-rose-400' : ''}`}
+            className={`w-5 h-5 transition-transform duration-150 ease-out motion-reduce:transition-none ${
+              isFavorited ? 'fill-rose-500 dark:fill-rose-400 scale-110' : 'scale-100'
+            }`}
             aria-hidden="true"
           />
         </button>

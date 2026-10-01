@@ -50,7 +50,7 @@ export function ResultCount({
                 type="button"
                 onClick={onClearSearch}
                 aria-label={`Remove search filter for ${searchQuery}`}
-                className="hover:text-slate-950 dark:hover:text-white focus-visible:outline-none"
+                className="hover:text-slate-950 dark:hover:text-white focus-visible:outline-none transition-colors duration-150 motion-reduce:transition-none"
               >
                 <X className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
@@ -64,7 +64,7 @@ export function ResultCount({
                 type="button"
                 onClick={onClearCategory}
                 aria-label={`Remove category filter for ${selectedCategory}`}
-                className="hover:text-naija-950 dark:hover:text-white focus-visible:outline-none"
+                className="hover:text-naija-950 dark:hover:text-white focus-visible:outline-none transition-colors duration-150 motion-reduce:transition-none"
               >
                 <X className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
@@ -74,7 +74,7 @@ export function ResultCount({
           <button
             type="button"
             onClick={onClearAll}
-            className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-semibold underline underline-offset-2 ml-1"
+            className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-semibold underline underline-offset-2 ml-1 transition-colors duration-150 motion-reduce:transition-none"
           >
             Clear all
           </button>
