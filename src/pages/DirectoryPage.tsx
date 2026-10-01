@@ -2,6 +2,7 @@ import { Sparkles } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { SearchBar } from '../components/directory/SearchBar'
 import { CategoryFilter } from '../components/directory/CategoryFilter'
+import { FavoritesFilter } from '../components/directory/FavoritesFilter'
 import { ResultCount } from '../components/directory/ResultCount'
 import { BusinessGrid } from '../components/directory/BusinessGrid'
 import { LoadingState } from '../components/common/LoadingState'
@@ -22,8 +23,10 @@ export function DirectoryPage() {
     error,
     searchQuery,
     selectedCategory,
+    showFavoritesOnly,
     setSearchQuery,
     setSelectedCategory,
+    setShowFavoritesOnly,
     clearSearch,
     clearCategory,
     clearFilters,
@@ -58,6 +61,16 @@ export function DirectoryPage() {
           onChange={setSearchQuery}
           onClear={clearSearch}
         />
+
+        <div className="pt-1">
+          <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+            Show
+          </div>
+          <FavoritesFilter
+            showFavoritesOnly={showFavoritesOnly}
+            onChange={setShowFavoritesOnly}
+          />
+        </div>
 
         <div className="pt-1">
           <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
@@ -97,12 +110,21 @@ export function DirectoryPage() {
         )}
 
         {status === 'success' && filteredBusinesses.length === 0 && (
-          <EmptyState
-            title="No businesses match your search."
-            message="We couldn't find any Nigerian businesses matching your search and category filter. Try clearing filters or using different keywords."
-            onReset={clearFilters}
-            resetLabel="Clear all filters"
-          />
+          showFavoritesOnly ? (
+            <EmptyState
+              title="No favorites yet."
+              message="Tap the heart on any business to add it to your favorites, and it will show up here."
+              onReset={() => setShowFavoritesOnly(false)}
+              resetLabel="Show all businesses"
+            />
+          ) : (
+            <EmptyState
+              title="No businesses match your search."
+              message="We couldn't find any Nigerian businesses matching your search and category filter. Try clearing filters or using different keywords."
+              onReset={clearFilters}
+              resetLabel="Clear all filters"
+            />
+          )
         )}
 
         {status === 'success' && filteredBusinesses.length > 0 && (

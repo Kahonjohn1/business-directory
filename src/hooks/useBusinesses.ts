@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import type { Business, BusinessCategory, AsyncStatus } from '../types/business'
 import { BUSINESS_CATEGORIES } from '../types/business'
 import { businessService } from '../services/businessService'
+import { useFavorites } from '../context/FavoritesContext'
 
 /**
  * Custom hook to manage the business directory state, async data fetching,
@@ -10,6 +11,10 @@ import { businessService } from '../services/businessService'
  */
 export function useBusinesses() {
   const [searchParams, setSearchParams] = useSearchParams()
+
+  // Favorites live in FavoritesContext so the heart buttons on the cards and
+  // this filter always agree on what is favorited.
+  const { favoriteIds } = useFavorites()
 
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [status, setStatus] = useState<AsyncStatus>('loading')
@@ -25,6 +30,11 @@ export function useBusinesses() {
 
   const [searchQuery, setSearchQuery] = useState(initialSearch)
   const [selectedCategory, setSelectedCategory] = useState<BusinessCategory | 'All'>(initialCategory)
+
+  // Narrow the directory to favorited businesses only. This is intentionally
+  // session-only UI state and is not written to the URL, so it resets on reload
+  // alongside the favorites themselves.
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 
   // Sync internal state when URL searchParams change (e.g. from back/forward or landing page navigation)
   useEffect(() => {
@@ -93,7 +103,8 @@ export function useBusinesses() {
     loadBusinesses()
   }, [loadBusinesses])
 
-  // Derived state: computed whenever businesses, searchQuery, or selectedCategory change
+  // Derived state: computed whenever businesses, searchQuery, selectedCategory,
+  // showFavoritesOnly or the favorites list change
   const filteredBusinesses = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
 
@@ -111,10 +122,14 @@ export function useBusinesses() {
       const matchesCategory =
         selectedCategory === 'All' || biz.category === selectedCategory
 
-      // Both criteria must be satisfied (AND logic)
-      return matchesSearch && matchesCategory
+      // 3. Favorites match, applied only while the Favorites filter is active
+      const matchesFavorites =
+        !showFavoritesOnly || favoriteIds.includes(biz.id)
+
+      // All active criteria must be satisfied (AND logic)
+      return matchesSearch && matchesCategory && matchesFavorites
     })
-  }, [businesses, searchQuery, selectedCategory])
+  }, [businesses, searchQuery, selectedCategory, showFavoritesOnly, favoriteIds])
 
   // Helper actions
   const clearSearch = useCallback(() => {
@@ -130,6 +145,7 @@ export function useBusinesses() {
   const clearFilters = useCallback(() => {
     setSearchQuery('')
     setSelectedCategory('All')
+    setShowFavoritesOnly(false)
     setSearchParams(new URLSearchParams(), { replace: true })
   }, [setSearchParams])
 
@@ -140,8 +156,10 @@ export function useBusinesses() {
     error,
     searchQuery,
     selectedCategory,
+    showFavoritesOnly,
     setSearchQuery: handleSetSearch,
     setSelectedCategory: handleSetCategory,
+    setShowFavoritesOnly,
     clearSearch,
     clearCategory,
     clearFilters,
