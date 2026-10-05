@@ -14,7 +14,6 @@ import {
   Home,
   Megaphone,
   Briefcase,
-  CheckCircle2,
 } from 'lucide-react'
 import { BUSINESS_CATEGORIES, type BusinessCategory } from '../types/business'
 import { mockBusinesses } from '../data/mockBusinesses'

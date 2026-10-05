@@ -1,4 +1,3 @@
-import { Sparkles } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { SearchBar } from '../components/directory/SearchBar'
 import { CategoryFilter } from '../components/directory/CategoryFilter'
