@@ -88,7 +88,9 @@ export function HomePage() {
               <Search className="w-5 h-5" aria-hidden="true" />
             </div>
             <input
-              type="text"
+              id="home-business-search"
+              name="business-search"
+              type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search companies, restaurants, clinics, or locations..."

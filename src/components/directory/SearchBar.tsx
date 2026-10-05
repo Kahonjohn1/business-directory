@@ -39,6 +39,7 @@ export function SearchBar({
       {/* Controlled Search Input */}
       <input
         id="business-search"
+        name="business-search"
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
