@@ -66,12 +66,6 @@ export function HomePage() {
     <div className="space-y-16 sm:space-y-20">
       {/* 1. HERO SECTION */}
       <section className="relative text-center max-w-4xl mx-auto pt-4 sm:pt-8">
-        {/* Verified Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-naija-50 dark:bg-naija-950/60 text-naija-700 dark:text-naija-300 text-xs sm:text-sm font-semibold mb-6 border border-naija-200 dark:border-naija-800 shadow-sm">
-          <CheckCircle2 className="w-4 h-4 text-naija-600 dark:text-naija-400" aria-hidden="true" />
-          <span>Curated Nigerian Business Discovery Hub</span>
-        </div>
-
         {/* Hero Title */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight sm:leading-tight">
           Discover & Connect with Businesses Across{' '}
